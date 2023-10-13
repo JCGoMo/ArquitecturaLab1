@@ -6,13 +6,13 @@ module execute #(parameter N=64)
      output logic zero_E);
      logic [N-1:0] muxOut, shiftOut;
 
-    mux2 mymux(readData2_E, signImm_E, ALUSrc, muxOut);
+    mux2 mymux(readData2_E, signImm_E, AluSrc, muxOut);
 
     sl2 myshift(signImm_E, shiftOut);
 
     adder myAdd(PC_E, shiftOut, PCBranch_E);
 
-    alu myAlu(readData1_E, muxOut, ALUControl, aluResult_E, zero_E);
+    alu myAlu(readData1_E, muxOut, AluControl, aluResult_E, zero_E);
 
     assign writeData_E = readData2_E;
     
