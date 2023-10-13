@@ -14,8 +14,19 @@ module regfile #(parameter N=64)
 		end
 
 	always_comb begin
-			rd1 <= (ra1 == 5'd31) ? 64'b0 : registers[ra1];
-			rd2 <= (ra2 == 5'd31) ? 64'b0 : registers[ra2];
-		        end
+			if(ra1 == wa3 && we3) begin 
+			 	rd1 <= wd3;
+			 	rd2 <= (ra2 == 5'd31) ? 64'b0 : registers[ra2]; 
+			end	else if(ra2 == wa3 && we3) begin
+				rd2 <= wd3;
+				rd1 <= (ra1 == 5'd31) ? 64'b0 : registers[ra1];
+			end	else if(ra2 == wa3 && ra1 == wa3 && we3) begin
+				rd1 <= wd3;
+			 	rd2 <= wd3;
+			end else begin
+				rd1 <= (ra1 == 5'd31) ? 64'b0 : registers[ra1];
+				rd2 <= (ra2 == 5'd31) ? 64'b0 : registers[ra2];
+			end
+	end
 												  
 endmodule
