@@ -1,27 +1,70 @@
-module maindec
-	(input logic [10:0] Op,
-	 output logic Reg2Loc, ALUSrc, MemtoReg, RegWrite, MemRead, MemWrite, Branch,
-	 output logic [1:0] ALUOp);
-	 
-	 always_comb
-		casez(Op)
-			11'b111_1100_0010 : {Reg2Loc, ALUSrc, MemtoReg, RegWrite, MemRead, 
-										MemWrite, Branch, ALUOp} = 9'b011110000; //LDUR
-			11'b111_1100_0000 : {Reg2Loc, ALUSrc, MemtoReg, RegWrite, MemRead, 
-										MemWrite, Branch, ALUOp} = 9'b110001000; //STUR
-			11'b101_1010_0??? : {Reg2Loc, ALUSrc, MemtoReg, RegWrite, MemRead, 
-										MemWrite, Branch, ALUOp} = 9'b100000101; //CBZ
-			11'b100_0101_1000 : {Reg2Loc, ALUSrc, MemtoReg, RegWrite, MemRead, 
-										MemWrite, Branch, ALUOp} = 9'b000100010; //ADD
-			11'b110_0101_1000 : {Reg2Loc, ALUSrc, MemtoReg, RegWrite, MemRead, 
-										MemWrite, Branch, ALUOp} = 9'b000100010; //SUB
-			11'b100_0101_0000 : {Reg2Loc, ALUSrc, MemtoReg, RegWrite, MemRead, 
-										MemWrite, Branch, ALUOp} = 9'b000100010; //AND
-			11'b101_0101_0000 : {Reg2Loc, ALUSrc, MemtoReg, RegWrite, MemRead, 
-										MemWrite, Branch, ALUOp} = 9'b000100010; //ORR
-			default: {Reg2Loc, ALUSrc, MemtoReg, RegWrite, MemRead,MemWrite, 
-						 Branch, ALUOp} = 9'b000000000; //Cualquier otro caso
-										
-		endcase
-
+module maindec (input logic [11:0] Op,
+					output logic Reg2Loc, ALUSrc, MemtoReg,
+					RegWrite, MemRead, MemWrite, Branch,
+					output logic [1:0] ALUOp);
+					
+		always_comb begin
+			casez (Op)
+				// LDUR
+				11'b111_1100_0010: begin
+						Reg2Loc <= 1'b0;
+						ALUSrc <= 1'b1;
+						MemtoReg <= 1'b1;
+						RegWrite <= 1'b1;
+						MemRead <= 1'b1;
+						MemWrite <= 1'b0;
+						Branch <= 1'b0;
+						ALUOp <= 2'b00;
+					end
+				// STUR
+				11'b111_1100_0000:begin
+						Reg2Loc <= 1'b1;
+						ALUSrc <= 1'b1;
+						MemtoReg <= 1'b0;
+						RegWrite <= 1'b0;
+						MemRead <= 1'b0;
+						MemWrite <= 1'b1;
+						Branch <= 1'b0;
+						ALUOp <= 2'b00;
+					end
+				// CBZ
+				11'b101_1010_0???:begin
+						Reg2Loc <= 1'b1;
+						ALUSrc <= 1'b0;
+						MemtoReg <= 1'b0;
+						RegWrite <= 1'b0;
+						MemRead <= 1'b0;
+						MemWrite <= 1'b0;
+						Branch <= 1'b1;
+						ALUOp <= 2'b01;
+					end
+				// ADD
+				11'b100_0101_1000,
+				// SUB
+				11'b110_0101_1000,
+				// AND
+				11'b100_0101_0000,
+				// ORR
+				11'b101_0101_0000: begin
+						Reg2Loc <= 1'b0;
+						ALUSrc <= 1'b0;
+						MemtoReg <= 1'b0;
+						RegWrite <= 1'b1;
+						MemRead <= 1'b0;
+						MemWrite <= 1'b0;
+						Branch <= 1'b0;
+						ALUOp <= 2'b10;
+					end
+				default: begin
+						Reg2Loc <= 1'b0;
+						ALUSrc <= 1'b0;
+						MemtoReg <= 1'b0;
+						RegWrite <= 1'b0;
+						MemRead <= 1'b0;
+						MemWrite <= 1'b0;
+						Branch <= 1'b0;
+						ALUOp <= 2'b00;
+					end
+			endcase
+		end
 endmodule
