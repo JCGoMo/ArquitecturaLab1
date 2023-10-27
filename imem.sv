@@ -3,7 +3,7 @@ module imem
 	(input logic [6:0] addr, //Un bit más para duplicar la memoria
 	 output logic [N-1:0] q);
 
-	logic [N-1:0] rom [0:127] = '{'0}; 
+	logic [N-1:0] rom [0:127] = {default: '0}; 
 	initial
 	begin
 		rom [0:79] ='{	32'hf8000001, 	// (1)
