@@ -6,6 +6,8 @@ module alu #(parameter N=64)
 			 output logic [N-1:0] result,
 			 output logic zero);
 
+	logic [1:0] shift = b[63:62]; //Nuevo
+
 	always_comb begin
 		casez(ALUControl)
 			4'b0000: result = a & b;
@@ -13,6 +15,7 @@ module alu #(parameter N=64)
 			4'b0010: result = a + b;
 			4'b0110: result = a - b;
 			4'b0111: result = b;
+			4'b1000: result = b << (shift * 16);  //Nuevo
 			default: result = '1;
 		endcase
 
