@@ -9,7 +9,7 @@ module imem
 	initial begin
 
 				rom = '{default:0};
-				rom [0:87] = 
+				rom [0:103] = 
 					  	'{  32'hf8000001,	// (1)
 							32'hf8008002,	// (2)
 							32'hf8000203,	// (3)
@@ -97,11 +97,23 @@ module imem
 							NOP,
 							NOP,	
 							32'hf81f83d9,	// (46)
-							32'hb400001f	// (47)
-							/*
-							32'hd2800069		// MOVZ X9, #0x0003, lsl #0
-							32'hf80003c9 		// STUR x9, [X30, #0]			
-							*/
+							32'hd2800069,		// MOVZ X9, #0x0003, lsl #00
+							NOP,
+							NOP,
+							32'hf80003c9,		// STUR x9, [X30, #0]		
+							32'hd2bfffe9,		// MOVZ X9, #0xFFFF, lsl #01
+							NOP,
+							NOP,
+							32'hf80083c9,		// STUR x9, [X30, #8] 
+							32'hd2caaaa9,		// MOVZ X9, #0x5555, lsl #10
+							NOP,
+							NOP,
+							32'hf80103c9,		// STUR x9, [X30, #16]
+							32'hd2ffffe9,		// MOVZ X9, #0xFFFF, lsl #11
+							NOP,
+							NOP,
+							32'hf80183c9,		// STUR x9, [X30, #24]
+							32'hb400001f		// (47)
 							};
 
 				/* 
