@@ -53,7 +53,7 @@ module datapath #(parameter N = 64)
 									
 	flopr 	#(281)	ID_EX 				(.clk(clk),
 										.reset(reset), // Añadimos rn_reg y rm_reg Nuevo
-										.d({rn_reg, rm_reg ,AluSrc, AluControl, Branch, memRead, memWrite, regWrite, memtoReg,	
+										.d({rn_reg, rm_reg ,AluSrc, AluControl, Branch, memRead, memWrite, regWrite, memtoReg,	/* del Branch al memtoReg => qID_EX[265:261] */
 											qIF_ID[95:32], signImm_D, readData1_D, readData2_D, qIF_ID[4:0]}),
 										.q(qID_EX));	
 	
@@ -71,8 +71,8 @@ module datapath #(parameter N = 64)
 										.rd_MemWb(qMEM_WB[4:0]),					// 5 bits
 										.WB_content_rd(writeData3),					// 64 bits
 										.Mem_content_rd(qEX_MEM[133:69]),		    // 64 bits
-										.regWrite_ExMem(),							// 1 bit  COMPLETAR
-										.regWrite_MemWb(),							// 1 bit  
+										.regWrite_ExMem(qEX_MEM[199]),				// 1 bit
+										.regWrite_MemWb(qMEM_WB[134]),				// 1 bit: El mismo que regWrite_D en decode.  
 										.PCBranch_E(PCBranch_E), 
 										.aluResult_E(aluResult_E), 
 										.writeData_E(writeData_E), 
@@ -81,7 +81,7 @@ module datapath #(parameter N = 64)
 									
 	flopr 	#(203)	EX_MEM 	(.clk(clk),
 										.reset(reset), 
-										.d({qID_EX[265:261], PCBranch_E, zero_E, aluResult_E, writeData_E, qID_EX[4:0]}),
+										.d({qID_EX[265:261]/* (branch, memRead, memWrite, regWrite => qEX_MEM[199], memtoReg) */, PCBranch_E, zero_E, aluResult_E, writeData_E, qID_EX[4:0]}),
 										.q(qEX_MEM));	
 	
 										

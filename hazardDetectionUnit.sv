@@ -1,0 +1,18 @@
+/*   if
+ *   (ID/EX.MemRead and
+ *   ((ID/EX.RegisterRd = IF/ID.RegisterRn1) or
+ *   (ID/EX.RegisterRd = IF/ID.RegisterRm2)))
+ *   stall the pipeline
+ */
+
+module hazardDetectionUnit #(parameter N = 64)
+    (input logic MemRead_IdEx,
+     input logic [4:0] Rd_IdEx, Rn1_IfId, Rm2_IfId
+     output logic stall
+    );
+    
+    if (MemRead_IdEx && ((Rd_IdEx == Rn1_IfId) || (Rd_IdEx == Rm2_IfId)))
+        stall = 1'b1;
+    else
+        stall = 1'b0;
+endmodule

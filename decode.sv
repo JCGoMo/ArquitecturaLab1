@@ -22,6 +22,8 @@ module decode #(parameter N = 64)
 	
 									
 	signext 		ext		(.a(instr_D), .y(signImm_D));
+
+	hazardDetectionUnit
 		
 	assign rn_reg = instr_D[9:5];
 	assign rm_reg = ra2;
