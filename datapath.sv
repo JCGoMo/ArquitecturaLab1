@@ -18,7 +18,7 @@ module datapath #(parameter N = 64)
 	logic PCSrc;
 	logic [N-1:0] PCBranch_E, aluResult_E, writeData_E, writeData3; 
 	logic [N-1:0] signImm_D, readData1_D, readData2_D;
-	logic zero_E;
+	logic zero_E, stall;
 	logic [95:0] qIF_ID;
 	logic [270:0] qID_EX;
 	logic [202:0] qEX_MEM;
@@ -32,8 +32,9 @@ module datapath #(parameter N = 64)
 										.imem_addr_F(IM_addr));								
 					
 	
-	flopr 	#(96)		IF_ID 	(.clk(clk),
-										.reset(reset), 
+	flopr_e 	#(96)		IF_ID 	(.clk(clk),
+										.reset(reset),
+										.enable(~stall), 				// Nuevo
 										.d({IM_addr, IM_readData}),
 										.q(qIF_ID));
 										
@@ -41,14 +42,17 @@ module datapath #(parameter N = 64)
 	decode 	#(64) 	DECODE 	(.regWrite_D(qMEM_WB[134]),
 										.reg2loc_D(reg2loc), 
 										.clk(clk),
+										.MemRead_IdEx(qID_EX[264]),		// Nuevo
 										.writeData3_D(writeData3),
 										.instr_D(qIF_ID[31:0]), 
 										.signImm_D(signImm_D), 
 										.readData1_D(readData1_D),
 										.readData2_D(readData2_D),
 										.wa3_D(qMEM_WB[4:0]),
+										.Rd_IdEx(qID_EX[4:0]),			// Nuevo
 										.rn_reg(rn_reg),		//Nuevo
 										.rm_reg(rm_reg));		//Nuevo	
+										.stall(stall);			//Nuevo
 																									
 									
 	flopr 	#(281)	ID_EX 				(.clk(clk),

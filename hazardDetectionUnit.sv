@@ -5,11 +5,11 @@
  *   stall the pipeline
  */
 
-module hazardDetectionUnit #(parameter N = 64)
-    (input logic MemRead_IdEx,
-     input logic [4:0] Rd_IdEx, Rn1_IfId, Rm2_IfId
-     output logic stall
-    );
+module hazardDetectionUnit (input logic MemRead_IdEx,
+                            input logic [4:0] Rd_IdEx, Rn1_IfId, Rm2_IfId
+                            output logic stall,
+                            output logic PCWrite // program counter write
+                            );
     
     if (MemRead_IdEx && ((Rd_IdEx == Rn1_IfId) || (Rd_IdEx == Rm2_IfId)))
         stall = 1'b1;
