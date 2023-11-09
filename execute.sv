@@ -26,9 +26,9 @@ module execute
 	forwardingUnit #(N) ForwardingUnit(.Rn(rn_register),
 									   .Rm(rm_register),
 									   .Rd_ExMem(rd_ExMem),
-									   .Rd_MemWb(rd_MemWb),
+									   .Rd_MemWB(rd_MemWb),
 									   .RegWrite_ExMem(regWrite_ExMem),
-									   .RegWrite_MemWb(regWrite_MemWb),
+									   .RegWrite_MemWB(regWrite_MemWb),
 									   .ForwardA(control_muxA),
 									   .ForwardB(control_muxB));
 

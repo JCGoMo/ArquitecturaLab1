@@ -7,7 +7,7 @@
 
 module hazardDetectionUnit (input logic MemRead_IdEx,
                             input logic [4:0] Rd_IdEx, Rn1_IfId, Rm2_IfId,
-                            output logic stall,
+                            output logic stall
                             /* output logic PCWrite */ // program counter write
                             );
     always_comb begin

@@ -56,7 +56,7 @@ module datapath #(parameter N = 64)
 										.rn_reg(rn_reg),		//Nuevo
 										.rm_reg(rm_reg),		//Nuevo	
 										.stall(stall));			//Nuevo
-	//Salida para el ID_EX fuera de datapath
+	//Salida para el ID_EX fuera de datapath 
 	assign stall_out = stall; 									//Nuevo
 																									
 	mux2 # (10) control ({AluSrc, AluControl, Branch, memRead, memWrite, regWrite, memtoReg}, 10'b0, stall, control_mux);	 /* 0 => control normal, 1 => stall (0000) */
