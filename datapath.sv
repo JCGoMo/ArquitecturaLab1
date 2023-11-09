@@ -9,25 +9,28 @@ module datapath #(parameter N = 64)
 					input logic memRead,
 					input logic memWrite,
 					input logic regWrite,	
-					input logic memtoReg,									
+					input logic memtoReg,				
 					input logic [31:0] IM_readData,
 					input logic [N-1:0] DM_readData,
 					output logic [N-1:0] IM_addr, DM_addr, DM_writeData,
-					output logic DM_writeEnable, DM_readEnable );					
+					output logic DM_writeEnable, DM_readEnable,
+					output logic stall_out);					
 					
 	logic PCSrc;
 	logic [N-1:0] PCBranch_E, aluResult_E, writeData_E, writeData3; 
 	logic [N-1:0] signImm_D, readData1_D, readData2_D;
 	logic zero_E, stall;
 	logic [95:0] qIF_ID;
-	logic [270:0] qID_EX;
+	logic [281:0] qID_EX;
 	logic [202:0] qEX_MEM;
 	logic [134:0] qMEM_WB;
 	logic [4:0] rn_reg, rm_reg; //Nuevo
+	logic [9:0] control_mux; //Nuevo
 	
 	fetch 	#(64) 	FETCH 	(.PCSrc_F(PCSrc),
 										.clk(clk),
 										.reset(reset),
+										.enable(~stall), 				// Nuevo
 										.PCBranch_F(qEX_MEM[197:134]),
 										.imem_addr_F(IM_addr));								
 					
@@ -51,17 +54,19 @@ module datapath #(parameter N = 64)
 										.wa3_D(qMEM_WB[4:0]),
 										.Rd_IdEx(qID_EX[4:0]),			// Nuevo
 										.rn_reg(rn_reg),		//Nuevo
-										.rm_reg(rm_reg));		//Nuevo	
-										.stall(stall);			//Nuevo
+										.rm_reg(rm_reg),		//Nuevo	
+										.stall(stall));			//Nuevo
+	//Salida para el ID_EX fuera de datapath
+	assign stall_out = stall; 									//Nuevo
 																									
-									
+	mux2 # (10) control ({AluSrc, AluControl, Branch, memRead, memWrite, regWrite, memtoReg}, 10'b0, stall, control_mux);	 /* 0 => control normal, 1 => stall (0000) */
+						
 	flopr 	#(281)	ID_EX 				(.clk(clk),
 										.reset(reset), // Añadimos rn_reg y rm_reg Nuevo
-										.d({rn_reg, rm_reg ,AluSrc, AluControl, Branch, memRead, memWrite, regWrite, memtoReg,	/* del Branch al memtoReg => qID_EX[265:261] */
+										.d({rn_reg, rm_reg ,control_mux,	/* del Branch al memtoReg => qID_EX[265:261] */
 											qIF_ID[95:32], signImm_D, readData1_D, readData2_D, qIF_ID[4:0]}),
 										.q(qID_EX));	
-	
-			// Falta ampliar tamaño							
+							
 	execute 	#(64) 	EXECUTE 	(  
 										.AluSrc(qID_EX[270]),
 										.AluControl(qID_EX[269:266]),
@@ -112,5 +117,5 @@ module datapath #(parameter N = 64)
 										.DM_readData_W(qMEM_WB[68:5]), 
 										.memtoReg(qMEM_WB[133]), 
 										.writeData3_W(writeData3));		
-		
+
 endmodule

@@ -38,23 +38,23 @@ module forwardingUnit #(parameter N = 64) (
 
     // EX hazard
 
-        if (RegWrite_ExMem and (Rd_ExMem != 5'd31)
-            and (Rd_ExMem = Rn)) ForwardA <= 2'b10;
+        if (RegWrite_ExMem && (Rd_ExMem != 5'd31)
+            && (Rd_ExMem == Rn)) ForwardA <= 2'b10;
             
-        if (RegWrite_ExMem and (Rd_ExMem != 5'd31)
-            and (Rd_ExMem = Rm)) ForwardB <= 2'b10; 
+        if (RegWrite_ExMem && (Rd_ExMem != 5'd31)
+            && (Rd_ExMem == Rm)) ForwardB <= 2'b10; 
 
     // MEM hazard  
 
-        if (RegWrite_MemWB and (Rd_MemWB != 5'd31)
-            and not(RegWrite_ExMem and (Rd_ExMem != 5'd31)
-            and (Rd_ExMem != Rn))
-            and (Rd_ExMem = Rn)) ForwardA <= 2'b01;
+        if (RegWrite_MemWB && (Rd_MemWB != 5'd31)
+            && ~(RegWrite_ExMem && (Rd_ExMem != 5'd31)      //? Negacion bien escrita?
+            && (Rd_ExMem != Rn))
+            && (Rd_ExMem == Rn)) ForwardA <= 2'b01;
 
-        if (RegWrite_MemWB and (Rd_MemWB != 5'd31)
-            and not(RegWrite_ExMem and (Rd_ExMem != 5'd31)
-            and (Rd_ExMem != Rm2))
-            and (Rd_MemWB = Rm)) ForwardB <= 2'b01;
+        if (RegWrite_MemWB && (Rd_MemWB != 5'd31)
+            && ~(RegWrite_ExMem && (Rd_ExMem != 5'd31)      //? Negacion bien escrita?
+            && (Rd_ExMem != Rm))
+            && (Rd_MemWB == Rm)) ForwardB <= 2'b01;
         
     end
 

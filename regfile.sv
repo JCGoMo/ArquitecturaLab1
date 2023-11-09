@@ -25,7 +25,7 @@ module regfile #(parameter N = 64) (
 		
 		// Escribir registers
 		always_ff @(posedge clk) begin
-			if (we3 && (wa3 !=  XZR)) REGS[wa3] <= wd3;
+			if (we3 && (wa3 !=  XZR)) REGS[wa3] <= wd3; 
 		end
 		
 endmodule
