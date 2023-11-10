@@ -36,14 +36,13 @@ module forwardingUnit #(parameter N = 64) (
 );
 
     always_comb begin
+
         // Resetear las salidas antes de hacer nuevas asignaciones
         ForwardA = 2'b00;
         ForwardB = 2'b00;
-        
-        // EX hazard //! Este if esta bien
 
         // MEM hazard  
-        if (RegWrite_MemWB & (Rd_MemWB != 5'd31) begin
+        if (RegWrite_MemWB & (Rd_MemWB != 5'd31)) begin
             if (~(RegWrite_ExMem & (Rd_ExMem != 5'd31)
             & (Rd_ExMem != Rn)) & (Rd_ExMem == Rn)) 
                 ForwardA = 2'b01;
@@ -53,12 +52,11 @@ module forwardingUnit #(parameter N = 64) (
                 ForwardB = 2'b01;
         end
 
+        // EX hazard
         else if (RegWrite_ExMem & (Rd_ExMem != 5'd31)) begin
             if (Rd_ExMem == Rn) ForwardA = 2'b10;
             if (Rd_ExMem == Rm) ForwardB = 2'b10;
         end
-
-
 
         /*  if (MEM/WB.RegWrite and (MEM/WB.RegisterRd ≠ 31)
             Escritura en etapa WB = 1, registro a escribit != reg 31 BIEN
