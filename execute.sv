@@ -32,6 +32,6 @@ module execute
 									   .ForwardA(control_muxA),
 									   .ForwardB(control_muxB));
 
-	assign writeData_E = readData2_E;
+	assign writeData_E = muxB_out;
 	
 endmodule
