@@ -20,8 +20,8 @@ module execute
 	mux2 #(N)	Mux(muxB_out, signImm_E, AluSrc, muxOut);
 	alu #(N) 	Alu(muxA_out, muxOut, AluControl, aluResult_E, zero_E);
 	
-	mux3 #(N)	MuxA(readData1_E, WB_content_rd, Mem_content_rd , control_muxA, muxA_out);
-	mux3 #(N)	MuxB(readData2_E, WB_content_rd, Mem_content_rd , control_muxB, muxB_out);
+	mux3 #(N)	MuxA(readData1_E, WB_content_rd, Mem_content_rd, control_muxA, muxA_out);
+	mux3 #(N)	MuxB(readData2_E, WB_content_rd, Mem_content_rd, control_muxB, muxB_out);
 
 	forwardingUnit #(N) ForwardingUnit(.Rn(rn_register),
 									   .Rm(rm_register),
