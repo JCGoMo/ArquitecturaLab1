@@ -19,4 +19,6 @@ module alu #(parameter N=64)
 		zero = ~(|result); // zero is active when no bit of result is set
 	end
 
+	
+
 endmodule
