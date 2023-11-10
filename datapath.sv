@@ -46,6 +46,7 @@ module datapath #(parameter N = 64)
 										.reg2loc_D(reg2loc), 
 										.clk(clk),
 										.MemRead_IdEx(qID_EX[264]),		// Nuevo
+										.MemRead_ExMem(qEX_MEM[200]),	// Nuevo
 										.writeData3_D(writeData3),
 										.instr_D(qIF_ID[31:0]), 
 										.signImm_D(signImm_D), 
@@ -53,6 +54,7 @@ module datapath #(parameter N = 64)
 										.readData2_D(readData2_D),
 										.wa3_D(qMEM_WB[4:0]),
 										.Rd_IdEx(qID_EX[4:0]),			// Nuevo
+										.Rd_ExMem(qEX_MEM[4:0]),			// Nuevo
 										.rn_reg(rn_reg),		//Nuevo
 										.rm_reg(rm_reg),		//Nuevo	
 										.stall(stall));			//Nuevo
@@ -90,7 +92,7 @@ module datapath #(parameter N = 64)
 									
 	flopr 	#(203)	EX_MEM 	(.clk(clk),
 										.reset(reset), 
-										.d({qID_EX[265:261]/* (branch, memRead, memWrite, regWrite => qEX_MEM[199], memtoReg) */, PCBranch_E, zero_E, aluResult_E, writeData_E, qID_EX[4:0]}),
+										.d({qID_EX[265:261]/* (branch, memRead, memWrite ==> qEX_MEM[200], regWrite => qEX_MEM[199], memtoReg) */, PCBranch_E, zero_E, aluResult_E, writeData_E, qID_EX[4:0]}),
 										.q(qEX_MEM));	
 	
 										
