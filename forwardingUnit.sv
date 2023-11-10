@@ -41,24 +41,22 @@ module forwardingUnit #(parameter N = 64) (
         ForwardB = 2'b00;
         
         // EX hazard //! Este if esta bien
-        if (RegWrite_ExMem & (Rd_ExMem != 5'd31)) begin
+
+        // MEM hazard  
+        if (RegWrite_MemWB & (Rd_MemWB != 5'd31) begin
+            if (~(RegWrite_ExMem & (Rd_ExMem != 5'd31)
+            & (Rd_ExMem != Rn)) & (Rd_ExMem == Rn)) 
+                ForwardA = 2'b01;
+
+            if (~(RegWrite_ExMem & (Rd_ExMem != 5'd31)
+            & (Rd_ExMem != Rm)) & (Rd_MemWB == Rm)) 
+                ForwardB = 2'b01;
+        end
+
+        else if (RegWrite_ExMem & (Rd_ExMem != 5'd31)) begin
             if (Rd_ExMem == Rn) ForwardA = 2'b10;
             if (Rd_ExMem == Rm) ForwardB = 2'b10;
         end
-
-    // MEM hazard  
-
-
-
-        if (RegWrite_MemWB & (Rd_MemWB != 5'd31)
-            & ~(RegWrite_ExMem & (Rd_ExMem != 5'd31)      //? Negacion bien escrita?
-            & (Rd_ExMem != Rn))
-            & (Rd_ExMem == Rn)) ForwardA = 2'b01;
-
-        if (RegWrite_MemWB & (Rd_MemWB != 5'd31)
-            & ~(RegWrite_ExMem & (Rd_ExMem != 5'd31)      //? Negacion bien escrita?
-            & (Rd_ExMem != Rm))
-            & (Rd_MemWB == Rm)) ForwardB = 2'b01;
 
 
 
