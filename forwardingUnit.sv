@@ -21,6 +21,7 @@ if (MEM/WB.RegWrite and (MEM/WB.RegisterRd ≠ 31)
 and not(EX/MEM.RegWrite and (EX/MEM.RegisterRd ≠ 31)
 and (EX/MEM.RegisterRd ≠ ID/EX.RegisterRn1))
 and (MEM/WB.RegisterRd = ID/EX.RegisterRn1)) ForwardA = 01
+
 if (MEM/WB.RegWrite and (MEM/WB.RegisterRd ≠ 31)
 and not(EX/MEM.RegWrite and (EX/MEM.RegisterRd ≠ 31)
 and (EX/MEM.RegisterRd ≠ ID/EX.RegisterRm2))
@@ -40,10 +41,26 @@ module forwardingUnit #(parameter N = 64) (
         ForwardB = 2'b00;
         
         // EX hazard //! Este if esta bien
-        if (RegWrite_ExMem && (Rd_ExMem != 5'd31)) begin
+        if (RegWrite_ExMem & (Rd_ExMem != 5'd31)) begin
             if (Rd_ExMem == Rn) ForwardA = 2'b10;
             if (Rd_ExMem == Rm) ForwardB = 2'b10;
         end
+
+    // MEM hazard  
+
+
+
+        if (RegWrite_MemWB & (Rd_MemWB != 5'd31)
+            & ~(RegWrite_ExMem & (Rd_ExMem != 5'd31)      //? Negacion bien escrita?
+            & (Rd_ExMem != Rn))
+            & (Rd_ExMem == Rn)) ForwardA = 2'b01;
+
+        if (RegWrite_MemWB & (Rd_MemWB != 5'd31)
+            & ~(RegWrite_ExMem & (Rd_ExMem != 5'd31)      //? Negacion bien escrita?
+            & (Rd_ExMem != Rm))
+            & (Rd_MemWB == Rm)) ForwardB = 2'b01;
+
+
 
         /*  if (MEM/WB.RegWrite and (MEM/WB.RegisterRd ≠ 31)
             Escritura en etapa WB = 1, registro a escribit != reg 31 BIEN
@@ -69,25 +86,7 @@ module forwardingUnit #(parameter N = 64) (
             end
         end */
 
-        // MEM hazard
-        if (RegWrite_MemWB && (Rd_MemWB != 5'd31)) begin
-            if (~RegWrite_ExMem || ((Rd_ExMem != 5'd31) && (Rd_ExMem != Rn) && (Rd_MemWB == Rn))) ForwardA = 2'b01;
-            if (~RegWrite_ExMem || ((Rd_ExMem != 5'd31) && (Rd_ExMem != Rm) && (Rd_MemWB == Rm))) ForwardB = 2'b01;
-        end
-
 
     end
 
 endmodule
-
-/* if (RegWrite_MemWB and (Rd_MemWB != 5'd31)
-and not(RegWrite_ExMem and (Rd_ExMem != 5'd31)
-and (Rd_ExMem != Rn))
-and (Rd_MemWB = Rn)) ForwardA = 2'b01
-if (RegWrite_MemWB and (Rd_MemWB != 5'd31)
-and not(RegWrite_ExMem and (Rd_ExMem != 5'd31)
-and (Rd_ExMem != Rm))
-and (Rd_MemWB = Rm)) ForwardB = 2'b01 */
-
-/*  ~ (a & b & c) & d
-    ~a | (c & d)   */
