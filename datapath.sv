@@ -30,12 +30,10 @@ module datapath #(parameter N = 64)
 	fetch 	#(64) 	FETCH 	(.PCSrc_F(PCSrc),
 										.clk(clk),
 										.reset(reset),
-										.enable(stall),				// Nuevo
+										.enable(~stall),				// Nuevo
 										.PCBranch_F(qEX_MEM[197:134]),
-										.PC_Stalled(qIF_ID[95:32]),	// Nuevo
 										.imem_addr_F(IM_addr));								
 	
-
 	
 	flopr_e 	#(96)		IF_ID 	(.clk(clk),
 										.reset(reset),
