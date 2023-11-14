@@ -1,4 +1,4 @@
-# Laboratorio ARMv8 en SystemVerilog
+# **Laboratorio ARMv8 en SystemVerilog**
 
 **Fecha de entrega:** martes 14 de noviembre
 
@@ -14,25 +14,27 @@ En el marco del proyecto, se ha llevado a cabo la implementación de la instrucc
 
 ## Modificaciones Introducidas
 
-## 1. Cambios en el Datapath
+### 1. Cambios en el Datapath
 
-### 1.1 Modificación en el módulo `signext`
-Se realizó una modificación en el módulo `signext` para aprovechar su salida de 64 bits. Los bits `[15:0]` se utilizan para representar el inmediato, mientras que los bits `[63:62]` identifican el LSL. Esta adaptación permite un manejo eficiente de la información necesaria para la instrucción MOVZ.
+- Modificación en el módulo `signext`:
+  
+	Se realizó una modificación en el módulo `signext` para aprovechar su salida de 64 bits. Los bits `[15:0]` se utilizan para representar el inmediato, mientras que los bits `[63:62]` identifican el LSL. Esta adaptación permite un manejo eficiente de la información necesaria para la instrucción MOVZ.
 
-### 1.2 Modificación en el módulo `ALU`
-Dentro del módulo `ALU`, se incorporó un caso adicional para la instrucción MOVZ. Cuando se detecta esta instrucción, se posicionan los bits según el LSL indicado, utilizando un desplazamiento correspondiente. El resto del proceso sigue la lógica estándar para cualquier operación de la ALU.
+- Modificación en el módulo `ALU`:
 
-## 2. Cambios en el Controller
+	Dentro del módulo `ALU`, se incorporó un caso adicional para la instrucción MOVZ. Cuando se detecta esta instrucción, se posicionan los bits según el LSL indicado, utilizando un desplazamiento correspondiente. El resto del proceso sigue la lógica estándar para cualquier operación de la ALU.
 
-### 2.1 Modificación en el módulo maindec
-En el módulo `maindec` del `controller`, se añadió un caso específico para la instrucción MOVZ. Se establecieron las señales de control de manera acorde al comportamiento de esta instrucción, configurando `RegWrite` para escribir el resultado en un registro, `ALUSrc` para utilizar la salida de `signext` como entrada en la `ALU`, y `ALUOp` con el valor 11, seleccionado arbitrariamente para diferenciar la instrucción MOVZ de las demás.
+### 2. Cambios en el Controller
 
-### 2.2 Modificación en el módulo aludec
-En el módulo `aludec`, se incorporó un caso adicional para la instrucción MOVZ. La salida `alucontrol` se ajustó con el valor 1000, seleccionado arbitrariamente para distinguir la instrucción MOVZ de las demás.
+- Modificación en el módulo maindec
+	En el módulo `maindec` del `controller`, se añadió un caso específico para la instrucción MOVZ. Se establecieron las señales de control de manera acorde al comportamiento de esta instrucción, configurando `RegWrite` para escribir el resultado en un registro, `ALUSrc` para utilizar la salida de `signext` como entrada en la `ALU`, y `ALUOp` con el valor 11, seleccionado arbitrariamente para diferenciar la instrucción MOVZ de las demás.
 
-## Diagrama del Nuevo Microprocesador
+- Modificación en el módulo aludec
+	En el módulo `aludec`, se incorporó un caso adicional para la instrucción MOVZ. La salida `alucontrol` se ajustó con el valor 1000, seleccionado arbitrariamente para distinguir la instrucción MOVZ de las demás.
 
-![diagrama del nuevo microprocesador](img)
+## Recorrido de la Instrucción MOVZ
+
+![diagrama del nuevo microprocesador](imagenes/datapath.png)
 
 ## Verificación de la Implementación
 
