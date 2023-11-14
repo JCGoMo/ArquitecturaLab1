@@ -1,4 +1,4 @@
-# ArquitecturaLab1I
+# ArquitecturaLab1
 
 Creacion de ForwardingUnit y mux3
 (Si no funciona ForwardingUnit ver de nuevo los registros de las guardas)
