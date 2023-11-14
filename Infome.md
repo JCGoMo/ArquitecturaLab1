@@ -26,11 +26,13 @@ En el marco del proyecto, se ha llevado a cabo la implementación de la instrucc
 
 ### 2. Cambios en el Controller
 
-- Modificación en el módulo maindec
-	En el módulo `maindec` del `controller`, se añadió un caso específico para la instrucción MOVZ. Se establecieron las señales de control de manera acorde al comportamiento de esta instrucción, configurando `RegWrite` para escribir el resultado en un registro, `ALUSrc` para utilizar la salida de `signext` como entrada en la `ALU`, y `ALUOp` con el valor 11, seleccionado arbitrariamente para diferenciar la instrucción MOVZ de las demás.
+- Modificación en el módulo `maindec`:
 
-- Modificación en el módulo aludec
-	En el módulo `aludec`, se incorporó un caso adicional para la instrucción MOVZ. La salida `alucontrol` se ajustó con el valor 1000, seleccionado arbitrariamente para distinguir la instrucción MOVZ de las demás.
+	Se añadió un caso específico para la instrucción MOVZ. Se establecieron las señales de control de manera acorde al comportamiento de esta instrucción, configurando `RegWrite` para escribir el resultado en un registro, `ALUSrc` para utilizar la salida de `signext` como entrada en la `ALU`, y `ALUOp` con el valor 11, seleccionado arbitrariamente para diferenciar la instrucción MOVZ de las demás.
+
+- Modificación en el módulo `aludec`:
+
+	Se incorporó un caso adicional para la instrucción MOVZ. La salida `alucontrol` se ajustó con el valor 1000, seleccionado arbitrariamente para distinguir la instrucción MOVZ de las demás.
 
 ## Recorrido de la Instrucción MOVZ
 
@@ -58,3 +60,5 @@ Los resultados se compararon con los valores esperados almacenados en el archivo
 
 ## Resultados y Conclusiones
 La instrucción MOVZ se integró exitosamente en el microprocesador con pipeline, manteniendo la funcionalidad de las instrucciones existentes. Las modificaciones en el datapath y en el controller se llevaron a cabo de manera coherente, y la verificación con programas de prueba confirmó el correcto funcionamiento del microprocesador ampliado.
+
+# 2) Implementación de la Instrucción ADD en un Microprocesador con Pipeline
