@@ -1,10 +1,3 @@
-/*   if
- *   (ID/EX.MemRead and
- *   ((ID/EX.RegisterRd = IF/ID.RegisterRn1) or
- *   (ID/EX.RegisterRd = IF/ID.RegisterRm2)))
- *   stall the pipeline
- */
-
 module hazardDetectionUnit (input logic MemRead_IdEx, MemRead_ExMem,
                             input logic [4:0] Rd_IdEx, Rd_ExMem, Rn1_IfId, Rm2_IfId,
                             output logic stall
