@@ -61,4 +61,38 @@ Los resultados se compararon con los valores esperados almacenados en el archivo
 ## Resultados y Conclusiones
 La instrucción MOVZ se integró exitosamente en el microprocesador con pipeline, manteniendo la funcionalidad de las instrucciones existentes. Las modificaciones en el datapath y en el controller se llevaron a cabo de manera coherente, y la verificación con programas de prueba confirmó el correcto funcionamiento del microprocesador ampliado.
 
-# 2) Implementación de la Instrucción ADD en un Microprocesador con Pipeline
+# 2) Implementación de Hazard Detection Unit y Forwarding Unit en el Procesador LEGv8
+
+## Introducción
+En el marco de la evolución del procesador LEGv8, se ha implementado un bloque de Hazard Detection Unit (HDU) y otro de Forwarding Unit con el objetivo de abordar y gestionar de manera eficiente los data hazards en el pipeline. La técnica de forwarding-stall se ha aplicado para minimizar el impacto de estos hazards, permitiendo un flujo de ejecución más suave.
+
+## Modificaciones Realizadas 
+
+### 1. Hazard Detection Unit (HDU) en el Bloque Instruction Decode (ID):
+   
+Se implementó un bloque de Hazard Detection Unit (HDU) en la instancia del Instruction Decode (ID). Este bloque analiza las condiciones detalladas en el capítulo 4.7 del libro "Computer Organization and Design - ARM Edition" para detectar data hazards de distintos tipos. Las dependencias de datos se han considerado exhaustivamente para abordar situaciones de riesgo.
+
+![Hazard Detection Unit](imagenes/hdu.png)
+
+### 2. Forwarding Unit en el Bloque Execute (EX):
+
+Se creó una nueva entidad denominada `Forwarding Unit` encargada de gestionar el forwarding de datos entre etapas del pipeline, contribuyendo así a la mitigación de data hazards. Esta unidad permite dirigir los datos adecuadamente para evitar stalls innecesarios.
+
+![Forwarding Unit](imagenes/forwarding.png)
+
+### 3. Nuevo Registro FLOPRE
+
+Se diseñó un nuevo registro denominado `flopr_e`, similar al FLOPR pero con la adición de una señal de enable. Cuando el enable está activado (enable = 1), el `flopr_e` opera de manera normal; sin embargo, al detectar un flanco de CLK con enable desactivado (enable = 0), congela su valor y evita cambios en el pipeline.
+
+Esta variacion se aplicó en el `flopr` del modulo `#fetch`. Su función principal es congelar el valor del Program Counter (PC) al surgir un stall. Asimismo, se aplicó esta variante en el pipeline IF_ID para preservar el valor de la instrucción cuando se presenta un stall, tanto en el interior del módulo #datapath como en el módulo `#processor_arm`.
+
+### 4. Modificaciones en el Datapath
+
+Se agregaron las siguientes señales al datapath:
+
+- `stall_out`:  señal de stall que se propaga hacia el modulo `#processor_arm`.
+- `rn_reg`, `rm_reg`: señales de los registros de los operandos de la instrucción con los que el forwarding unit debe trabajar.
+- `control_mux` : señales de control para el multiplexor de control de la unidad de forwarding.
+
+Ademas de cada conexion de señales internas entre los modulos.
+
