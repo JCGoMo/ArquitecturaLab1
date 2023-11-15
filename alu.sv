@@ -13,6 +13,7 @@ module alu #(parameter N=64)
 			4'b0010: result = a + b;
 			4'b0110: result = a - b;
 			4'b0111: result = b;
+			4'b1000: result = b << (b[63:62] * 16);  //Nuevo
 			default: result = '1;
 		endcase
 

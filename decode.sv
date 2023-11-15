@@ -1,11 +1,14 @@
 // Etapa: DECODE
 
 module decode #(parameter N = 64)
-					(input logic regWrite_D, reg2loc_D, clk,
+					(input logic regWrite_D, reg2loc_D, MemRead_IdEx, MemRead_ExMem, clk,
 					input logic [N-1:0] writeData3_D,
 					input logic [31:0] instr_D,
-					output logic [N-1:0] signImm_D, readData1_D, readData2_D, 
-					input logic [4:0] wa3_D); // Eliminar para single cycle processor
+					input logic [4:0] Rd_IdEx, Rd_ExMem, wa3_D,  // Eliminar para single cycle processor
+					output logic [N-1:0] signImm_D, readData1_D, readData2_D,
+					output logic [4:0] rn_reg, rm_reg,
+					output logic  stall
+					); 
 					
 	logic [4:0] ra2;			
 	
@@ -19,6 +22,12 @@ module decode #(parameter N = 64)
 	//							 .wd3(writeData3_D), .rd1(readData1_D), .rd2(readData2_D));
 	
 									
-	signext 		ext		(.a(instr_D), .y(signImm_D));	
-	
+	signext 		ext		(.a(instr_D), .y(signImm_D));
+
+	hazardDetectionUnit hdu (.MemRead_IdEx(MemRead_IdEx), .MemRead_ExMem(MemRead_ExMem), .Rd_IdEx(Rd_IdEx), 
+														.Rd_ExMem(Rd_ExMem),	.Rn1_IfId(instr_D[9:5]), .Rm2_IfId(ra2), .stall(stall)); 
+
+	assign rn_reg = instr_D[9:5];
+	assign rm_reg = ra2;
+
 endmodule

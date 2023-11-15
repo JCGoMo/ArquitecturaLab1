@@ -55,6 +55,17 @@ module maindec (input logic [11:0] Op,
 						Branch <= 1'b0;
 						ALUOp <= 2'b10;
 					end
+				//MOVZ
+				11'b110_1001_01??: begin    //Nuevo
+						Reg2Loc <= 1'b0;	//Nuevo 
+						ALUSrc <= 1'b1;		//Nuevo, usamos la salida de signext en la entrada b de la ALU
+						MemtoReg <= 1'b0;	//Nuevo
+						RegWrite <= 1'b1;	//Nuevo, escribimos el res en un registro al final
+						MemRead <= 1'b0;	//Nuevo
+						MemWrite <= 1'b0;	//Nuevo
+						Branch <= 1'b0;		//Nuevo
+						ALUOp <= 2'b11;		//Nuevo, Ningun otro tenia el valor 11, fue arbitrario(Importa el numero?)
+					end
 				default: begin
 						Reg2Loc <= 1'b0;
 						ALUSrc <= 1'b0;
