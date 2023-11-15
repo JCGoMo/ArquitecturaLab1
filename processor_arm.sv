@@ -12,7 +12,7 @@ module processor_arm #(parameter N = 64)
 	logic [N-1:0] DM_readData, IM_address;  //DM_addr, DM_writeData
 	logic DM_readEnable; //DM_writeEnable
 	logic [10:0] instr;
-	logic stall;
+	logic stall, flush;
 	
 	controller 		c 			(.instr(instr), 
 									.AluControl(AluControl), 
@@ -42,10 +42,11 @@ module processor_arm #(parameter N = 64)
 									.DM_writeData(DM_writeData), 
 									.DM_writeEnable(DM_writeEnable), 
 									.DM_readEnable(DM_readEnable),
-									.stall_out(stall));				
+									.stall_out(stall),
+									.flush(flush));				
 					
 					
-	imem 				instrMem (.addr(IM_address[8:2]),
+	imem 				instrMem (.addr(IM_address[8:2]), .flush(flush),
 									.q(q));
 									
 	

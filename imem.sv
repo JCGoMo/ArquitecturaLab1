@@ -1,6 +1,7 @@
 module imem
 	#(parameter N=32)
 	(input logic [6:0] addr, //Un bit más para duplicar la memoria
+	 input logic flush,
 	 output logic [N-1:0] q);
 	 
 	logic [N-1:0] rom [0:127];  
@@ -76,6 +77,12 @@ module imem
 
 	end		 
 					
-	assign 	q = rom[addr];
-	 
+	// Modificacion para flush
+	always_comb begin
+		
+		if (flush) q = 'd0;
+		else q = rom[addr];
+	
+	end
+
 endmodule

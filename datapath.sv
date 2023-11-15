@@ -14,7 +14,7 @@ module datapath #(parameter N = 64)
 					input logic [N-1:0] DM_readData,
 					output logic [N-1:0] IM_addr, DM_addr, DM_writeData,
 					output logic DM_writeEnable, DM_readEnable,
-					output logic stall_out);					
+					output logic stall_out, flush);					
 					
 	logic PCSrc;
 	logic [N-1:0] PCBranch_E, aluResult_E, writeData_E, writeData3; 
@@ -24,7 +24,7 @@ module datapath #(parameter N = 64)
 	logic [281:0] qID_EX;
 	logic [202:0] qEX_MEM;
 	logic [134:0] qMEM_WB;
-	logic [4:0] rn_reg, rm_reg; //Nuevo
+	logic [4:0] rn_reg, rm_reg, control_flush_out; //Nuevo
 	logic [9:0] control_mux; //Nuevo
 	
 	fetch 	#(64) 	FETCH 	(.PCSrc_F(PCSrc),
@@ -61,7 +61,7 @@ module datapath #(parameter N = 64)
 	//Salida para el ID_EX fuera de datapath 
 	assign stall_out = stall; 									//Nuevo
 																									
-	mux2 # (10) control ({AluSrc, AluControl, Branch, memRead, memWrite, regWrite, memtoReg}, 10'b0, stall, control_mux);	 /* 0 => control normal, 1 => stall (0000) */
+	mux2 # (10) control ({AluSrc, AluControl, Branch, memRead, memWrite, regWrite, memtoReg}, 10'b0, (stall | flush), control_mux);	 /* 0 => control normal, 1 => stall (0000) */
 						
 	flopr 	#(281)	ID_EX 				(.clk(clk),
 										.reset(reset), // Añadimos rn_reg y rm_reg Nuevo
@@ -89,17 +89,19 @@ module datapath #(parameter N = 64)
 										.writeData_E(writeData_E), 
 										.zero_E(zero_E));											
 											
-									
+	mux2 #(5) control_flush (qID_EX[265:261], 5'b0, flush, control_flush_out);
+
 	flopr 	#(203)	EX_MEM 	(.clk(clk),
 										.reset(reset), 
-										.d({qID_EX[265:261]/* (branch, memRead, memWrite ==> qEX_MEM[200], regWrite => qEX_MEM[199], memtoReg) */, PCBranch_E, zero_E, aluResult_E, writeData_E, qID_EX[4:0]}),
+										.d({control_flush_out/* (branch, memRead, memWrite ==> qEX_MEM[200], regWrite => qEX_MEM[199], memtoReg) */, PCBranch_E, zero_E, aluResult_E, writeData_E, qID_EX[4:0]}),
 										.q(qEX_MEM));	
 	
 										
 	memory				MEMORY	(.Branch_M(qEX_MEM[202]), 
 										.zero_M(qEX_MEM[133]), 
 										.PCSrc_M(PCSrc));
-			
+									
+	assign flush = PCSrc;
 	
 	// Salida de señales a Data Memory
 	assign DM_writeData = qEX_MEM[68:5];

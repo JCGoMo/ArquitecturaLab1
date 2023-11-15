@@ -1,18 +1,10 @@
 # ArquitecturaLab1
 
-Creacion de ForwardingUnit y mux3
-(Si no funciona ForwardingUnit ver de nuevo los registros de las guardas)
+modificaciones en imem.sv --> flush con salida en 0
 
-MOdificamos execute.sv (agregamos la forwardingUnit y los mux3)
+datapath modificado --> nueva señal flush
+- ID_EX con control en 0 (se modifico el mux de control para q sea 0 con flush tmb)
+- EX_MEM con control en 0 (se agrego un mux de control para q sea 0 con flush)
+- se setea flush = PCSrc
 
-Modificamos decode.sv (agregamos rn_reg, rm_reg)
-
-Modificamos Datapath: 
-    - dos señales (logic [4:0] rn_reg, rm_reg; //Nuevo)
-    - el registro flopr 	#(281)	ID_EX , agregamos las señales rn_reg, rm_reg (ahora tiene 10 bits mas)
-    - execute: conectamos señales nuevas (comentadas e datapath)
-    - decode:
-
-
-Terminar informe del punto 1 => imagen del datapath.
-Agregar imagenes, corregir el codigo imem => Agregar codigo en assembler y especificar cual es la nop.
+se modifico processor_arm.sv para hacer las conecciones de flush
