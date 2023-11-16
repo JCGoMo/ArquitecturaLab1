@@ -1,6 +1,6 @@
 # **Laboratorio ARMv8 en SystemVerilog**
 
-**Fecha de entrega:** martes 14 de noviembre
+**Fecha de entrega:** jueves 16 de noviembre de 2023
 
 ## Integrantes
 - González Moreno, Juan Cruz
@@ -139,6 +139,35 @@ En este caso, la señal de ForwardB se setea en 10 (binario) para que se efectue
 ## Conclusiones
 La implementación de Hazard Detection Unit y Forwarding Unit en el procesador LEGv8 ha demostrado ser efectiva para abordar data hazards y mejorar la eficiencia del pipeline. La combinación de forwarding y stall ha permitido gestionar de manera óptima las dependencias de datos, garantizando un flujo de ejecución suave y eficiente.
 
-# 3) Implementación de flush en el Procesador LEGv8
+# 3) Control de Hazard y Flush de Instrucciones
 
+## Introducción
+En el marco de la mejora del procesador con forwarding-stall, se incorporó la lógica necesaria para detectar y gestionar hazards de control. El objetivo es implementar un mecanismo de flush de instrucciones incorrectamente cargadas en el pipeline debido a una predicción incorrecta de salto. Es importante señalar que, por defecto, la configuración de la predicción de salto en nuestro procesador es "NOT TAKEN". Esto significa que, en caso de que se produzca un salto de línea (branch), el procesador no realiza el salto y continúa ejecutando la siguiente instrucción. En consecuencia, cada vez que se produce efectivamente un salto de línea, se activa el mecanismo de flush para corregir la carga errónea de instrucciones.
 
+## Modificaciones Realizadas
+### Modulo datapath
+Se introdujeron nuevos módulos y señales para gestionar eficientemente los hazards de control y realizar el flush de instrucciones:
+
+- `flush`: Señal encargada de detectar la ocurrencia de hazards de control. Se activa cuando se produce un salto de  línea (branch).
+
+- Multiplexores de Flush: Multiplexores adicionales que interponen ceros en las señales de control de los registros `ID/EX` y `EX/MEM` cuando se activa la señal `flush`.
+
+![flush](imagenes/flush_dp.png)
+
+### Modulo processor_arm
+
+Modificación de Instruction Memory `imem`: Se implementó una lógica para transformar la salida de la Instruction Memory en una instrucción NOP cuando se detecta un hazard de control. Esto se logra escribiendo ceros a la salida de la Instruction Memory ante una señal de `flush`. De esta manera, se evita que se carguen instrucciones incorrectas en el pipeline.
+
+![imem](imagenes/flush_imem.png)
+
+## Verificación y Resultados
+Se ejecutó nuevamente el código proporcionado en el ejercicio 1 sin agregar instrucciones NOP. A continuación, se muestra una captura de la pantalla "Wave" de ModelSim donde se evidencia el flush de instrucciones.
+
+#### Captura de Pantalla de Wave en ModelSim
+![wave](imagenes/flush_sim.png)
+
+Se puede observar que, ante la ocurrencia de `flush` se interponen ceros en las señales de control de los registros `ID/EX`, `EX/MEM` y a la salida de la imem. Esto evita que se carguen instrucciones incorrectas en el pipeline.
+
+## Conclusiones
+
+La exitosa implementación del mecanismo de detección y flush de instrucciones, diseñado para abordar los hazards de control originados por predicciones erróneas de salto, refuerza la robustez del procesador con forwarding-stall. Este enfoque asegura la ejecución precisa de instrucciones incluso en escenarios potencialmente conflictivos, contribuyendo así a mejorar la confiabilidad y la precisión del pipeline.
