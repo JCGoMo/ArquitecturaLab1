@@ -139,5 +139,6 @@ En este caso, la señal de ForwardB se setea en 10 (binario) para que se efectue
 ## Conclusiones
 La implementación de Hazard Detection Unit y Forwarding Unit en el procesador LEGv8 ha demostrado ser efectiva para abordar data hazards y mejorar la eficiencia del pipeline. La combinación de forwarding y stall ha permitido gestionar de manera óptima las dependencias de datos, garantizando un flujo de ejecución suave y eficiente.
 
+# 3) Implementación de flush en el Procesador LEGv8
 
 
