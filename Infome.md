@@ -75,6 +75,8 @@ Se implementó un bloque de Hazard Detection Unit (HDU) en la instancia del Inst
 ![Hazard Detection Unit](imagenes/hdu.png)
 ![processor_arm](imagenes/processor_arm.png)
 
+La Hazard Detection Unit recibe como entrada los registros `Rn` y `Rm` de la etapa de DECODE, así como los registros `Rd` de las etapas de ID/EX y EX/MEM. Como resultado, genera una señal de stall que se activa en la detección de un hazard de datos.
+
 ### 2. Forwarding Unit en el Bloque Execute (EX):
 
 Se creó una nueva entidad denominada `Forwarding Unit` encargada de gestionar el forwarding de datos entre etapas del pipeline, contribuyendo así a la mitigación de data hazards. Esta unidad permite dirigir los datos adecuadamente para evitar stalls innecesarios.
@@ -82,6 +84,12 @@ Se creó una nueva entidad denominada `Forwarding Unit` encargada de gestionar e
 ![Forwarding Unit](imagenes/forwarding.png)
 
 La implementacion propia se hizo siguiendo estrictamente la propuesta del libro "Computer Organization and Design - ARM Edition" figura 4.55.
+
+Este módulo toma como parámetros de entrada los registros `Rn` y `Rm` de la etapa ID/EX, así como los registros `Rd` de los pipelines EX/MEM y MEM/WB. Además, recibe como entrada las señales de control `RegWrite` de los pipelines EX/MEM y MEM/WB para analizar las dependencias de datos entre instrucciones.
+
+Como resultado, genera las señales de control `ForwardA` y `ForwardB`, que se utilizan en la etapa de EXECUTE para direccionar los datos hacia los multiplexores correspondientes.
+
+Las entradas de la `ALU` se gestionan mediante dos multiplexores. Estos multiplexores, dependiendo de las señales de control `ForwardA` y `ForwardB`, dirigen los datos desde los pipelines EX/MEM y MEM/WB hacia la `ALU`. Cuando las señales `ForwardA` y `ForwardB` son 00 (binario), significa que el dato proviene de la etapa anterior, indicando la ausencia de dependencia de datos.
 
 ### 3. Nuevo Registro FLOPRE
 
